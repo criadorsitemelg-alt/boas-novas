@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AD Boas Novas do Cururu - Oficial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --primary: #001f3f; --gold: #d4af37; --accent: #f8fafc; }
+        body { background: var(--accent); font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        
+        /* Estilos do Site Público */
+        .hero { background: linear-gradient(rgba(0,31,63,0.8), rgba(0,31,63,0.8)), url('https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073'); background-size: cover; background-position: center; }
+        .nav-public { background: rgba(0,31,63,0.95); backdrop-filter: blur(10px); }
+        
+        /* Estilos do Painel Administrativo */
+        .sidebar { width: 280px; background: var(--primary); height: 100vh; position: fixed; left: 0; top: 0; border-right: 4px solid var(--gold); z-index: 1000; transition: 0.3s; }
+        .admin-content { margin-left: 280px; padding: 40px; }
+        .nav-link { display: flex; align-items: center; gap: 15px; padding: 18px 25px; color: #cbd5e1; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        .nav-link:hover, .nav-link.active { background: #002d5a; color: var(--gold); border-left: 4px solid var(--gold); }
+        
+        /* Componentes */
+        .card { background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); padding: 30px; transition: 0.3s; }
+        .btn-gold { background: var(--gold); color: var(--primary); font-weight: 800; padding: 14px 28px; border-radius: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .hidden { display: none !important; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+
+        /* Carteirinha Estilizada */
+        .card-id { width: 350px; height: 210px; background: white; border: 2px solid var(--primary); border-radius: 12px; position: relative; padding: 15px; display: flex; flex-direction: column; }
+        .card-id-header { background: var(--primary); color: var(--gold); margin: -15px -15px 10px -15px; padding: 8px; text-align: center; border-radius: 10px 10px 0 0; font-size: 10px; font-weight: 900; }
+    </style>
+</head>
+<body>
+
+    <div id="public-site">
+        <nav class="nav-public fixed w-full z-[500] text-white p-4 flex justify-between items-center px-10">
+            <div class="flex items-center gap-3">
+                <img src="logo3.jpeg" class="h-10 rounded-full border border-[var(--gold)]">
+                <span class="font-black tracking-tighter uppercase text-sm">AD Boas Novas</span>
+            </div>
+            <div class="hidden md:flex gap-8 text-[10px] font-bold uppercase tracking-widest">
+                <a href="#home" class="hover:text-[var(--gold)]">Início</a>
+                <a href="#sobre" class="hover:text-[var(--gold)]">Sobre</a>
+                <a href="#noticias" class="hover:text-[var(--gold)]">Notícias</a>
+                <button onclick="showLogin()" class="bg-[var(--gold)] text-[var(--primary)] px-4 py-1 rounded-full">Painel ADM</button>
+            </div>
+        </nav>
+
+        <section id="home" class="hero min-h-screen flex items-center justify-center text-center text-white px-6">
+            <div class="max-w-3xl">
+                <h1 class="text-5xl md:text-7xl font-black mb-6 uppercase leading-tight">Boas Novas <span class="text-[var(--gold)]">no Cururu</span></h1>
+                <p class="text-lg opacity-80 mb-10 font-light">Uma igreja família na região do Marajó, levando o evangelho de Cristo com amor e dedicação.</p>
+                <div class="flex flex-col md:flex-row justify-center gap-4">
+                    <a href="#sobre" class="btn-gold">Conheça Nossa História</a>
+                    <a href="#contato" class="border-2 border-white px-8 py-3 rounded-xl font-bold hover:bg-white hover:text-[var(--primary)] transition">Localização</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="login-screen" class="fixed inset-0 z-[2000] hidden flex items-center justify-center bg-slate-950/95 backdrop-blur-xl">
+        <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md border-t-[12px] border-[var(--gold)]">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-black text-[var(--primary)] uppercase">Administração</h2>
+                <p class="text-gray-400 text-xs font-bold uppercase tracking-widest mt-2">Acesso Restrito</p>
+            </div>
+            <div class="space-y-4">
+                <input type="email" id="adm-email" placeholder="E-mail" class="w-full p-4 bg-gray-50 border rounded-xl outline-none focus:border-[var(--gold)]">
+                <input type="password" id="adm-pass" placeholder="Senha" class="w-full p-4 bg-gray-50 border rounded-xl outline-none focus:border-[var(--gold)]">
+                <button id="btn-entrar" class="w-full btn-gold py-5 shadow-xl">Entrar no Sistema</button>
+                <button onclick="hideLogin()" class="w-full text-gray-400 text-[10px] font-bold uppercase hover:text-red-500">Voltar ao Site</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-panel" class="hidden">
+        <aside class="sidebar flex flex-col">
+            <div class="p-8 text-center bg-black/10 border-b border-white/5 mb-6">
+                <img src="logo3.jpeg" class="h-16 mx-auto mb-4 rounded-xl border-2 border-[var(--gold)] shadow-lg">
+                <p class="text-[var(--gold)] font-black text-[10px] uppercase tracking-[0.3em]">Painel de Gestão</p>
+            </div>
+            <nav class="flex-1">
+                <div onclick="nav('dash')" class="nav-link active" id="n-dash"><i class="fas fa-chart-pie w-6"></i> Dashboard</div>
+                <div onclick="nav('membros')" class="nav-link" id="n-membros"><i class="fas fa-users-cog w-6"></i> Membros</div>
+                <div onclick="nav('fin')" class="nav-link" id="n-fin"><i class="fas fa-hand-holding-usd w-6"></i> Financeiro</div>
+                <div onclick="nav('notic')" class="nav-link" id="n-notic"><i class="fas fa-newspaper w-6"></i> Notícias</div>
+            </nav>
+            <div class="p-6">
+                <button id="btn-sair" class="w-full p-3 bg-red-600/10 text-red-500 rounded-xl font-black text-[10px] uppercase hover:bg-red-600 hover:text-white transition">Encerrar Sessão</button>
+            </div>
+        </aside>
+
+        <main class="admin-content">
+            <section id="sec-dash" class="tab-content">
+                <h1 class="text-4xl font-black text-[var(--primary)] mb-10">RESUMO <span class="text-[var(--gold)]">ESTATÍSTICO</span></h1>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="card border-l-8 border-blue-600">
+                        <div class="flex justify-between items-start">
+                            <div><p class="text-gray-400 font-bold text-[10px] uppercase">Total de Membros</p><h3 id="d-membros" class="text-5xl font-black mt-2">0</h3></div>
+                            <i class="fas fa-users text-3xl text-blue-100"></i>
+                        </div>
+                    </div>
+                    <div class="card border-l-8 border-green-600">
+                        <div class="flex justify-between items-start">
+                            <div><p class="text-gray-400 font-bold text-[10px] uppercase">Saldo em Caixa</p><h3 id="d-caixa" class="text-4xl font-black text-green-600 mt-2 font-mono">R$ 0,00</h3></div>
+                            <i class="fas fa-wallet text-3xl text-green-100"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-membros" class="tab-content hidden">
+                <div class="flex justify-between items-center mb-10">
+                    <h1 class="text-4xl font-black text-[var(--primary)]">MEMBROS</h1>
+                    <button onclick="document.getElementById('modal-membro').classList.remove('hidden')" class="btn-gold shadow-lg shadow-yellow-600/20">+ Novo Registro</button>
+                </div>
+                <div class="card p-0 overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50 border-b">
+                            <tr class="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                <th class="p-6">Identificação</th><th>Nome</th><th>Cargo</th><th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-membros" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="sec-fin" class="tab-content hidden">
+                <div class="flex justify-between items-center mb-10 text-green-800">
+                    <h1 class="text-4xl font-black uppercase">Tesouraria</h1>
+                    <div class="flex gap-4">
+                        <button onclick="addFin('entrada')" class="bg-green-600 text-white px-6 py-3 rounded-xl font-bold uppercase text-xs">Entrada</button>
+                        <button onclick="addFin('saida')" class="bg-red-600 text-white px-6 py-3 rounded-xl font-bold uppercase text-xs">Saída</button>
+                    </div>
+                </div>
+                <div id="fluxo-financeiro" class="space-y-4"></div>
+            </section>
+        </main>
+    </div>
+
+    <div id="modal-membro" class="fixed inset-0 bg-black/80 hidden z-[5000] flex items-center justify-center p-6 backdrop-blur-md">
+        <div class="bg-white rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden">
+            <div class="p-6 bg-[var(--primary)] text-white font-black uppercase text-xs flex justify-between">
+                <span>Ficha Cadastral</span>
+                <button onclick="this.closest('#modal-membro').classList.add('hidden')" class="text-xl">&times;</button>
+            </div>
+            <form id="f-membro" class="p-8 space-y-5">
+                <div class="flex flex-col items-center">
+                    <div id="m-preview" class="w-28 h-28 rounded-full bg-gray-100 border-4 border-[var(--gold)] overflow-hidden flex items-center justify-center mb-4">
+                        <i class="fas fa-user-plus text-4xl text-gray-300"></i>
+                    </div>
+                    <input type="file" id="m-foto" accept="image/*" class="text-[10px]" onchange="preview(this)">
+                </div>
+                <input type="text" id="m-nome" placeholder="Nome Completo" required class="w-full p-4 bg-gray-50 border rounded-xl outline-none focus:border-[var(--gold)]">
+                <select id="m-cargo" class="w-full p-4 bg-gray-50 border rounded-xl outline-none">
+                    <option>Membro</option><option>Pastor(a)</option><option>Diácono/Diaconisa</option><option>Presbítero</option><option>Missionário(a)</option>
+                </select>
+                <button type="submit" class="w-full btn-gold py-5 mt-4">Confirmar Registro</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="print-area" class="hidden"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBM_Zr3x2v6RNNzJyozup0GR12-3MWX9f0",
+            authDomain: "igreja-boas-novas-f7e73.firebaseapp.com",
+            projectId: "igreja-boas-novas-f7e73",
+            storageBucket: "igreja-boas-novas-f7e73.appspot.com",
+            messagingSenderId: "331575453678",
+            appId: "1:331575453678:web:7469796e6a12b9180907e1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // CONTROLES DE INTERFACE
+        window.showLogin = () => document.getElementById('login-screen').classList.remove('hidden');
+        window.hideLogin = () => document.getElementById('login-screen').classList.add('hidden');
+        window.nav = (id) => {
+            document.querySelectorAll('.tab-content').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('sec-'+id).classList.remove('hidden');
+            document.getElementById('n-'+id).classList.add('active');
+        };
+
+        // AUTH
+        document.getElementById('btn-entrar').onclick = () => {
+            signInWithEmailAndPassword(auth, document.getElementById('adm-email').value, document.getElementById('adm-pass').value)
+                .catch(() => alert("Acesso Negado!"));
+        };
+        document.getElementById('btn-sair').onclick = () => signOut(auth);
+
+        onAuthStateChanged(auth, u => {
+            document.getElementById('public-site').classList.toggle('hidden', !!u);
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('admin-panel').classList.toggle('hidden', !u);
+            if(u) loadData();
+        });
+
+        // MEMBROS
+        window.preview = (input) => {
+            if(input.files[0]) {
+                const r = new FileReader();
+                r.onload = e => document.getElementById('m-preview').innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                r.readAsDataURL(input.files[0]);
+            }
+        }
+
+        document.getElementById('f-membro').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.disabled = true; btn.innerText = "REGISTRANDO...";
+            
+            let url = "https://via.placeholder.com/150";
+            const file = document.getElementById('m-foto').files[0];
+            if(file) {
+                const sRef = ref(storage, `membros/${Date.now()}`);
+                await uploadBytes(sRef, file);
+                url = await getDownloadURL(sRef);
+            }
+
+            await addDoc(collection(db, "membros"), {
+                nome: document.getElementById('m-nome').value,
+                cargo: document.getElementById('m-cargo').value,
+                foto: url, criadoEm: serverTimestamp()
+            });
+
+            document.getElementById('modal-membro').classList.add('hidden');
+            btn.disabled = false; btn.innerText = "Confirmar Registro";
+            loadData();
+        };
+
+        // CARREGAR TUDO
+        async function loadData() {
+            // Membros
+            const sM = await getDocs(query(collection(db, "membros"), orderBy("nome")));
+            const lM = document.getElementById('lista-membros');
+            lM.innerHTML = "";
+            document.getElementById('d-membros').innerText = sM.size;
+            sM.forEach(doc => {
+                const d = doc.data();
+                lM.innerHTML += `<tr class="hover:bg-slate-50 transition">
+                    <td class="p-6"><img src="${d.foto}" class="w-12 h-12 rounded-full border-2 border-[var(--gold)] object-cover shadow-sm"></td>
+                    <td class="font-black text-slate-700">${d.nome.toUpperCase()}</td>
+                    <td><span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">${d.cargo}</span></td>
+                    <td class="space-x-3">
+                        <button onclick="idCard('${d.nome}','${d.cargo}','${d.foto}')" class="text-blue-500 hover:text-blue-800"><i class="fas fa-id-card"></i></button>
+                        <button onclick="del('membros','${doc.id}')" class="text-red-300 hover:text-red-600"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+
+            // Finanças
+            const sF = await getDocs(query(collection(db, "financeiro"), orderBy("data", "desc")));
+            const lF = document.getElementById('fluxo-financeiro');
+            let saldo = 0;
+            lF.innerHTML = "";
+            sF.forEach(doc => {
+                const d = doc.data();
+                const v = parseFloat(d.valor);
+                saldo += (d.tipo === 'entrada' ? v : -v);
+                lF.innerHTML += `<div class="card flex justify-between items-center py-4 border-l-8 ${d.tipo === 'entrada' ? 'border-green-500' : 'border-red-500'}">
+                    <div><p class="font-black text-slate-700 uppercase text-xs">${d.desc}</p><p class="text-[9px] text-gray-400 font-bold uppercase">${d.tipo}</p></div>
+                    <div class="flex items-center gap-4">
+                        <span class="font-mono font-black ${d.tipo === 'entrada' ? 'text-green-600' : 'text-red-600'}">R$ ${v.toFixed(2)}</span>
+                        <button onclick="del('financeiro','${doc.id}')" class="text-gray-300"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('d-caixa').innerText = `R$ ${saldo.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        }
+
+        // CARTEIRINHA
+        window.idCard = (nome, cargo, foto) => {
+            const area = document.getElementById('print-area');
+            area.innerHTML = `
+                <div class="card-id">
+                    <div class="card-id-header">ASSEMBLEIA DE DEUS NO CURURU<br>MUNICÍPIO DE ANAJÁS - MARAJÓ/PA</div>
+                    <div style="display:flex; gap:15px; margin-top:20px;">
+                        <img src="${foto}" style="width:90px; height:110px; border:2px solid #001f3f; object-fit:cover; border-radius:5px;">
+                        <div>
+                            <p style="font-size:10px; font-weight:bold; color:#001f3f; margin:0">NOME DO MEMBRO:</p>
+                            <p style="font-size:12px; font-weight:900; margin-bottom:10px;">${nome.toUpperCase()}</p>
+                            <p style="font-size:10px; font-weight:bold; color:#001f3f; margin:0">CARGO / FUNÇÃO:</p>
+                            <p style="font-size:12px; font-weight:900; color:#d4af37;">${cargo.toUpperCase()}</p>
+                            <p style="font-size:7px; margin-top:20px; font-weight:bold;">VÁLIDA EM TODO TERRITÓRIO NACIONAL</p>
+                        </div>
+                    </div>
+                </div>`;
+            window.print();
+        };
+
+        window.addFin = async (tipo) => {
+            const desc = prompt("Descrição:");
+            const valor = prompt("Valor (ex: 100.00):");
+            if(desc && valor) {
+                await addDoc(collection(db, "financeiro"), { desc, valor, tipo, data: serverTimestamp() });
+                loadData();
+            }
+        };
+
+        window.del = async (col, id) => {
+            if(confirm("Deseja excluir permanentemente?")) {
+                await deleteDoc(doc(db, col, id));
+                loadData();
+            }
+        };
+    </script>
+</body>
+</html>
